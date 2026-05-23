@@ -12,7 +12,8 @@ export const metadata: Metadata = {
   title: "Brello — Modern HRMS Platform",
   description:
     "One platform for attendance, payroll, leaves, and everything HR — without the complexity. Built for growing teams.",
-  keywords: "HRMS, HR software, payroll, attendance, leave management, employee management",
+  keywords:
+    "HRMS, HR software, payroll, attendance, leave management, employee management",
 };
 
 export default function RootLayout({
