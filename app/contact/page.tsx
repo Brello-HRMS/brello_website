@@ -46,7 +46,7 @@ const INFO = [
       </svg>
     ),
     label: "Based in",
-    value: "Bangalore, Karnataka, India",
+    value: "Goregaon, Mumbai, India",
     sub: "Building for teams worldwide",
   },
 ];
