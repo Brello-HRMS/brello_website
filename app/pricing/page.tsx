@@ -13,6 +13,9 @@ const PLANS = [
   {
     name: "Free",
     monthly: 0,
+    discount: 0,
+    annual: 0,
+    annualDiscount: 0,
     desc: "Perfect for exploring Brello and managing basic HR needs.",
     limit: "Unlimited active employees",
     cta: "Start 30-Day Trial",
@@ -29,6 +32,9 @@ const PLANS = [
   {
     name: "Standard",
     monthly: 99,
+    discount: 0,
+    annual: 0,
+    annualDiscount: 0,
     desc: "Everything you need to run HR for a growing company.",
     limit: "Per active employee / month",
     cta: "Start 30-Day Trial",
@@ -49,6 +55,9 @@ const PLANS = [
   {
     name: "Premium",
     monthly: 149,
+    discount: 0,
+    annual: 0,
+    annualDiscount: 0,
     desc: "For larger teams with complex HR and payroll needs.",
     limit: "Per active employee / month",
     cta: "Start 30-Day Trial",
@@ -132,6 +141,9 @@ export default function PricingPage() {
         id: p.id,
         name: p.name,
         monthly: Number(p.price),
+        discount: Number(p.discount) || 0,
+        annual: Number(p.price_per_employee_annual) || 0,
+        annualDiscount: Number(p.annual_discount_percent) || 0,
         desc: p.description || "",
         limit:
           p.name === "Free"
@@ -142,7 +154,6 @@ export default function PricingPage() {
         badge: p.name === "Standard" ? "Most Popular" : undefined,
         features: p.feature || [],
       }));
-      // Sort to ensure Free -> Standard -> Premium based on price
       formattedPlans.sort((a: any, b: any) => a.monthly - b.monthly);
       return formattedPlans.length > 0 ? formattedPlans : PLANS;
     },
@@ -181,89 +192,133 @@ export default function PricingPage() {
                 Loading plans...
               </div>
             ) : (
-              plans.map((plan: any, i: number) => (
-                <FadeIn key={plan.name} delay={i * 0.1}>
-                  <div
-                    className={`relative rounded-3xl p-8 flex flex-col ${
-                      plan.highlight
-                        ? "bg-[#7F56D9] text-white shadow-2xl shadow-[#7F56D9]/30 md:scale-105"
-                        : "border-2 border-gray-100 hover:border-[#7F56D9]/25 hover:shadow-xl transition-all"
-                    }`}
-                  >
-                    {plan.badge && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                        <span className="bg-white text-[#7F56D9] text-xs font-black px-4 py-1.5 rounded-full shadow-lg border border-[#EDE9F8]">
-                          {plan.badge}
-                        </span>
-                      </div>
-                    )}
+              plans.map((plan: any, i: number) => {
+                const isFree = plan.monthly === 0;
+                const hasDiscount = plan.discount > 0 && !isFree;
+                const effectiveMonthly = hasDiscount
+                  ? Math.round(
+                      plan.monthly * (1 - plan.discount / 100) * 100
+                    ) / 100
+                  : plan.monthly;
 
-                    <h3
-                      className={`font-black text-2xl mb-1 ${plan.highlight ? "text-white" : "text-gray-900"}`}
+                return (
+                  <FadeIn key={plan.name} delay={i * 0.1}>
+                    <div
+                      className={`relative rounded-3xl p-8 flex flex-col ${
+                        plan.highlight
+                          ? "bg-[#7F56D9] text-white shadow-2xl shadow-[#7F56D9]/30 md:scale-105"
+                          : "border-2 border-gray-100 hover:border-[#7F56D9]/25 hover:shadow-xl transition-all"
+                      }`}
                     >
-                      {plan.name}
-                    </h3>
-                    <p
-                      className={`text-sm mb-5 leading-relaxed ${plan.highlight ? "text-white/70" : "text-gray-500"}`}
-                    >
-                      {plan.desc}
-                    </p>
-
-                    <div className="mb-2">
-                      <span
-                        className={`text-5xl font-black ${plan.highlight ? "text-white" : "text-gray-900"}`}
-                      >
-                        {plan.monthly === 0 ? "₹0" : `₹${plan.monthly}`}
-                      </span>
-                    </div>
-                    <p
-                      className={`text-xs mb-6 ${plan.highlight ? "text-white/50" : "text-gray-400"}`}
-                    >
-                      {plan.limit}
-                    </p>
-
-                    <a
-                      href={`http://localhost:5173/auth/register?plan_id=${plan.id || plan.name.toLowerCase()}`}
-                      className="w-full"
-                    >
-                      <Button
-                        className={`w-full rounded-xl mb-7 font-semibold ${
-                          plan.highlight
-                            ? "bg-white text-[#7F56D9] hover:bg-gray-100"
-                            : "bg-[#7F56D9] text-white hover:bg-[#6d47c4]"
-                        }`}
-                      >
-                        {plan.cta}
-                      </Button>
-                    </a>
-
-                    <ul className="space-y-3">
-                      {plan.features.map((f: string) => (
-                        <li key={f} className="flex items-start gap-3">
-                          <svg
-                            className={`w-4 h-4 mt-0.5 shrink-0 ${plan.highlight ? "text-white/80" : "text-[#7F56D9]"}`}
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={2.5}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                          <span
-                            className={`text-sm ${plan.highlight ? "text-white/80" : "text-gray-600"}`}
-                          >
-                            {f}
+                      {plan.badge && (
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                          <span className="bg-white text-[#7F56D9] text-xs font-black px-4 py-1.5 rounded-full shadow-lg border border-[#EDE9F8]">
+                            {plan.badge}
                           </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </FadeIn>
-              ))
+                        </div>
+                      )}
+
+                      <h3
+                        className={`font-black text-2xl mb-1 ${plan.highlight ? "text-white" : "text-gray-900"}`}
+                      >
+                        {plan.name}
+                      </h3>
+                      <p
+                        className={`text-sm mb-5 leading-relaxed ${plan.highlight ? "text-white/70" : "text-gray-500"}`}
+                      >
+                        {plan.desc}
+                      </p>
+
+                      {/* Price */}
+                      <div className="mb-1">
+                        {isFree ? (
+                          <span
+                            className={`text-5xl font-black ${plan.highlight ? "text-white" : "text-gray-900"}`}
+                          >
+                            ₹0
+                          </span>
+                        ) : (
+                          <div className="flex items-baseline gap-2 flex-wrap">
+                            {hasDiscount && (
+                              <span
+                                className={`text-lg font-medium line-through ${
+                                  plan.highlight
+                                    ? "text-white/40"
+                                    : "text-gray-300"
+                                }`}
+                              >
+                                ₹{plan.monthly.toLocaleString("en-IN")}
+                              </span>
+                            )}
+                            <span
+                              className={`text-5xl font-black tracking-tight ${plan.highlight ? "text-white" : "text-gray-900"}`}
+                            >
+                              ₹{effectiveMonthly.toLocaleString("en-IN")}
+                            </span>
+                            {hasDiscount && (
+                              <span
+                                className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                                  plan.highlight
+                                    ? "bg-white/20 text-white"
+                                    : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                }`}
+                              >
+                                {plan.discount}% off
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      <p
+                        className={`text-xs mb-6 ${plan.highlight ? "text-white/50" : "text-gray-400"}`}
+                      >
+                        {plan.limit}
+                      </p>
+
+                      <a
+                        href={`http://localhost:5173/auth/register?plan_id=${plan.id}`}
+                        className="w-full"
+                      >
+                        <Button
+                          className={`w-full rounded-xl mb-7 font-semibold ${
+                            plan.highlight
+                              ? "bg-white text-[#7F56D9] hover:bg-gray-100"
+                              : "bg-[#7F56D9] text-white hover:bg-[#6d47c4]"
+                          }`}
+                        >
+                          {plan.cta}
+                        </Button>
+                      </a>
+
+                      <ul className="space-y-3">
+                        {plan.features.map((f: string) => (
+                          <li key={f} className="flex items-start gap-3">
+                            <svg
+                              className={`w-4 h-4 mt-0.5 shrink-0 ${plan.highlight ? "text-white/80" : "text-[#7F56D9]"}`}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2.5}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                            <span
+                              className={`text-sm ${plan.highlight ? "text-white/80" : "text-gray-600"}`}
+                            >
+                              {f}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </FadeIn>
+                );
+              })
             )}
           </div>
 
