@@ -11,25 +11,6 @@ import { Button } from "@/components/ui/button";
 
 const PLANS = [
   {
-    name: "Free",
-    monthly: 0,
-    discount: 0,
-    annual: 0,
-    annualDiscount: 0,
-    desc: "Perfect for exploring Brello and managing basic HR needs.",
-    limit: "Unlimited active employees",
-    cta: "Start 30-Day Trial",
-    highlight: false,
-    features: [
-      "Employee directory & profiles",
-      "Basic attendance tracking",
-      "Leave management",
-      "Holiday calendar",
-      "1 admin user",
-      "Email support",
-    ],
-  },
-  {
     name: "Standard",
     monthly: 99,
     discount: 0,
@@ -37,11 +18,14 @@ const PLANS = [
     annualDiscount: 0,
     desc: "Everything you need to run HR for a growing company.",
     limit: "Per active employee / month",
-    cta: "Start 30-Day Trial",
+    cta: "Start Free Trial",
     highlight: true,
     badge: "Most Popular",
     features: [
-      "Everything in Free",
+      "Employee directory & profiles",
+      "Basic attendance tracking",
+      "Leave management",
+      "Holiday calendar",
       "Payroll processing",
       "Statutory compliance (PF, ESI, TDS)",
       "Geofencing attendance",
@@ -60,7 +44,7 @@ const PLANS = [
     annualDiscount: 0,
     desc: "For larger teams with complex HR and payroll needs.",
     limit: "Per active employee / month",
-    cta: "Start 30-Day Trial",
+    cta: "Start Free Trial",
     highlight: false,
     features: [
       "Everything in Standard",
@@ -137,23 +121,22 @@ export default function PricingPage() {
       const response = await axios.get("http://localhost:8000/api/v1/plans");
       const data = response.data;
       const fetchedPlans = Array.isArray(data) ? data : data.data || [];
-      const formattedPlans = fetchedPlans.map((p: any) => ({
-        id: p.id,
-        name: p.name,
-        monthly: Number(p.price),
-        discount: Number(p.discount) || 0,
-        annual: Number(p.price_per_employee_annual) || 0,
-        annualDiscount: Number(p.annual_discount_percent) || 0,
-        desc: p.description || "",
-        limit:
-          p.name === "Free"
-            ? "Unlimited active employees"
-            : "Per active employee / month",
-        cta: "Start 30-Day Trial",
-        highlight: p.name === "Standard",
-        badge: p.name === "Standard" ? "Most Popular" : undefined,
-        features: p.feature || [],
-      }));
+      const formattedPlans = fetchedPlans
+        .filter((p: any) => p.name !== "Free" && Number(p.price) > 0)
+        .map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          monthly: Number(p.price),
+          discount: Number(p.discount) || 0,
+          annual: Number(p.price_per_employee_annual) || 0,
+          annualDiscount: Number(p.annual_discount_percent) || 0,
+          desc: p.description || "",
+          limit: "Per active employee / month",
+          cta: "Start Free Trial",
+          highlight: p.name === "Standard",
+          badge: p.name === "Standard" ? "Most Popular" : undefined,
+          features: p.feature || [],
+        }));
       formattedPlans.sort((a: any, b: any) => a.monthly - b.monthly);
       return formattedPlans.length > 0 ? formattedPlans : PLANS;
     },
@@ -176,25 +159,30 @@ export default function PricingPage() {
             <h1 className="text-5xl font-black text-gray-900 mb-4 tracking-tight">
               Simple, transparent pricing
             </h1>
-            <p className="text-xl text-gray-500 mb-10">
-              Start free. Scale as you grow. No hidden fees, no surprises.
+            <p className="text-xl text-gray-500 mb-4">
+              Every plan includes a 30-day free trial. No card required, no surprises.
             </p>
+            <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold px-4 py-2 rounded-full mb-6">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              30 days free · No credit card needed
+            </div>
           </FadeIn>
         </div>
       </section>
 
       {/* Plans */}
       <section className="pb-28">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6 items-start">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-6 items-stretch">
             {loading ? (
-              <div className="col-span-3 text-center py-20 text-gray-500">
+              <div className="col-span-2 text-center py-20 text-gray-500">
                 Loading plans...
               </div>
             ) : (
               plans.map((plan: any, i: number) => {
-                const isFree = plan.monthly === 0;
-                const hasDiscount = plan.discount > 0 && !isFree;
+                const hasDiscount = plan.discount > 0;
                 const effectiveMonthly = hasDiscount
                   ? Math.round(
                       plan.monthly * (1 - plan.discount / 100) * 100
@@ -202,11 +190,11 @@ export default function PricingPage() {
                   : plan.monthly;
 
                 return (
-                  <FadeIn key={plan.name} delay={i * 0.1}>
+                  <FadeIn key={plan.name} delay={i * 0.1} className="h-full">
                     <div
-                      className={`relative rounded-3xl p-8 flex flex-col ${
+                      className={`relative rounded-3xl p-8 flex flex-col h-full ${
                         plan.highlight
-                          ? "bg-[#7F56D9] text-white shadow-2xl shadow-[#7F56D9]/30 md:scale-105"
+                          ? "bg-[#7F56D9] text-white shadow-2xl shadow-[#7F56D9]/30"
                           : "border-2 border-gray-100 hover:border-[#7F56D9]/25 hover:shadow-xl transition-all"
                       }`}
                     >
@@ -231,14 +219,7 @@ export default function PricingPage() {
 
                       {/* Price */}
                       <div className="mb-1">
-                        {isFree ? (
-                          <span
-                            className={`text-5xl font-black ${plan.highlight ? "text-white" : "text-gray-900"}`}
-                          >
-                            ₹0
-                          </span>
-                        ) : (
-                          <div className="flex items-baseline gap-2 flex-wrap">
+                        <div className="flex items-baseline gap-2 flex-wrap">
                             {hasDiscount && (
                               <span
                                 className={`text-lg font-medium line-through ${
@@ -267,7 +248,6 @@ export default function PricingPage() {
                               </span>
                             )}
                           </div>
-                        )}
                       </div>
 
                       <p
@@ -291,7 +271,7 @@ export default function PricingPage() {
                         </Button>
                       </a>
 
-                      <ul className="space-y-3">
+                      <ul className="space-y-3 mt-auto pt-2">
                         {plan.features.map((f: string) => (
                           <li key={f} className="flex items-start gap-3">
                             <svg
