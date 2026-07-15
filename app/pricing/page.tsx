@@ -118,7 +118,9 @@ export default function PricingPage() {
   const { data: plans = PLANS as any[], isLoading: loading } = useQuery({
     queryKey: ["plans"],
     queryFn: async () => {
-      const response = await axios.get("http://localhost:8000/api/v1/plans");
+      const response = await axios.get(
+        "https://brello-server-zo43.onrender.com/api/v1/plans",
+      );
       const data = response.data;
       const fetchedPlans = Array.isArray(data) ? data : data.data || [];
       const formattedPlans = fetchedPlans
@@ -160,11 +162,22 @@ export default function PricingPage() {
               Simple, transparent pricing
             </h1>
             <p className="text-xl text-gray-500 mb-4">
-              Every plan includes a 30-day free trial. No card required, no surprises.
+              Every plan includes a 30-day free trial. No card required, no
+              surprises.
             </p>
             <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-semibold px-4 py-2 rounded-full mb-6">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2.5}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
               30 days free · No credit card needed
             </div>
@@ -184,9 +197,8 @@ export default function PricingPage() {
               plans.map((plan: any, i: number) => {
                 const hasDiscount = plan.discount > 0;
                 const effectiveMonthly = hasDiscount
-                  ? Math.round(
-                      plan.monthly * (1 - plan.discount / 100) * 100
-                    ) / 100
+                  ? Math.round(plan.monthly * (1 - plan.discount / 100) * 100) /
+                    100
                   : plan.monthly;
 
                 return (
@@ -220,34 +232,34 @@ export default function PricingPage() {
                       {/* Price */}
                       <div className="mb-1">
                         <div className="flex items-baseline gap-2 flex-wrap">
-                            {hasDiscount && (
-                              <span
-                                className={`text-lg font-medium line-through ${
-                                  plan.highlight
-                                    ? "text-white/40"
-                                    : "text-gray-300"
-                                }`}
-                              >
-                                ₹{plan.monthly.toLocaleString("en-IN")}
-                              </span>
-                            )}
+                          {hasDiscount && (
                             <span
-                              className={`text-5xl font-black tracking-tight ${plan.highlight ? "text-white" : "text-gray-900"}`}
+                              className={`text-lg font-medium line-through ${
+                                plan.highlight
+                                  ? "text-white/40"
+                                  : "text-gray-300"
+                              }`}
                             >
-                              ₹{effectiveMonthly.toLocaleString("en-IN")}
+                              ₹{plan.monthly.toLocaleString("en-IN")}
                             </span>
-                            {hasDiscount && (
-                              <span
-                                className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                                  plan.highlight
-                                    ? "bg-white/20 text-white"
-                                    : "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                }`}
-                              >
-                                {plan.discount}% off
-                              </span>
-                            )}
-                          </div>
+                          )}
+                          <span
+                            className={`text-5xl font-black tracking-tight ${plan.highlight ? "text-white" : "text-gray-900"}`}
+                          >
+                            ₹{effectiveMonthly.toLocaleString("en-IN")}
+                          </span>
+                          {hasDiscount && (
+                            <span
+                              className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                                plan.highlight
+                                  ? "bg-white/20 text-white"
+                                  : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                              }`}
+                            >
+                              {plan.discount}% off
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <p
@@ -257,7 +269,7 @@ export default function PricingPage() {
                       </p>
 
                       <a
-                        href={`http://localhost:5173/auth/register?plan_id=${plan.id}`}
+                        href={`https://brellohrms.netlify.app/auth/register?plan_id=${plan.id}`}
                         className="w-full"
                       >
                         <Button
