@@ -27,6 +27,10 @@ jobs:
         run: npm ci || npm install
 
       - name: Build Next.js Static Export (out/)
+        env:
+          VITE_BRELLO_BASE_API: http://13.205.254.152:8000/api/v1
+          NEXT_PUBLIC_BRELLO_BASE_API: http://13.205.254.152:8000/api/v1
+          NEXT_PUBLIC_API_URL: http://13.205.254.152:8000/api/v1
         run: npm run build
 
       - name: Configure AWS Credentials
