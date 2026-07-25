@@ -27,6 +27,7 @@ export function Navbar() {
 
   const transparent = isHome && !scrolled;
   const isActive = (href: string) => pathname === href;
+  const webappUrl = process.env.NEXT_PUBLIC_WEBAPP_URL || "http://brello-webapp.s3-website.ap-south-1.amazonaws.com";
 
   return (
     <nav
@@ -86,7 +87,7 @@ export function Navbar() {
 
           {/* Desktop CTAs */}
           <div className="hidden lg:flex items-center gap-2">
-            <a href="http://brello-webapp.s3-website.ap-south-1.amazonaws.com">
+            <a href={webappUrl}>
               <Button
                 variant="ghost"
                 size="sm"
@@ -95,7 +96,7 @@ export function Navbar() {
                 Log in
               </Button>
             </a>
-            <a href="http://brello-webapp.s3-website.ap-south-1.amazonaws.com">
+            <a href={webappUrl}>
               <Button
                 size="sm"
                 className="bg-[#7F56D9] hover:bg-[#6d47c4] text-white rounded-xl shadow-sm shadow-[#7F56D9]/25"
@@ -150,12 +151,12 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="pt-3 flex flex-col gap-2">
-                <a href="http://brello-webapp.s3-website.ap-south-1.amazonaws.com">
+                <a href={webappUrl}>
                   <Button variant="outline" className="w-full rounded-xl">
                     Log in
                   </Button>
                 </a>
-                <a href="http://brello-webapp.s3-website.ap-south-1.amazonaws.com">
+                <a href={webappUrl}>
                   <Button className="w-full bg-[#7F56D9] hover:bg-[#6d47c4] text-white rounded-xl">
                     Get Started Free
                   </Button>
