@@ -86,19 +86,23 @@ export function Navbar() {
 
           {/* Desktop CTAs */}
           <div className="hidden lg:flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={transparent ? "text-gray-300 hover:text-white hover:bg-white/10" : "text-gray-600"}
-            >
-              Log in
-            </Button>
-            <Button
-              size="sm"
-              className="bg-[#7F56D9] hover:bg-[#6d47c4] text-white rounded-xl shadow-sm shadow-[#7F56D9]/25"
-            >
-              Get Started Free
-            </Button>
+            <a href="http://brello-webapp.s3-website.ap-south-1.amazonaws.com">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={transparent ? "text-gray-300 hover:text-white hover:bg-white/10" : "text-gray-600"}
+              >
+                Log in
+              </Button>
+            </a>
+            <a href="http://brello-webapp.s3-website.ap-south-1.amazonaws.com">
+              <Button
+                size="sm"
+                className="bg-[#7F56D9] hover:bg-[#6d47c4] text-white rounded-xl shadow-sm shadow-[#7F56D9]/25"
+              >
+                Get Started Free
+              </Button>
+            </a>
           </div>
 
           {/* Mobile toggle */}
@@ -146,12 +150,16 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="pt-3 flex flex-col gap-2">
-                <Button variant="outline" className="w-full rounded-xl">
-                  Log in
-                </Button>
-                <Button className="w-full bg-[#7F56D9] hover:bg-[#6d47c4] text-white rounded-xl">
-                  Get Started Free
-                </Button>
+                <a href="http://brello-webapp.s3-website.ap-south-1.amazonaws.com">
+                  <Button variant="outline" className="w-full rounded-xl">
+                    Log in
+                  </Button>
+                </a>
+                <a href="http://brello-webapp.s3-website.ap-south-1.amazonaws.com">
+                  <Button className="w-full bg-[#7F56D9] hover:bg-[#6d47c4] text-white rounded-xl">
+                    Get Started Free
+                  </Button>
+                </a>
               </div>
             </div>
           </motion.div>
